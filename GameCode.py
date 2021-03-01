@@ -235,7 +235,7 @@ class Cell(pygame.sprite.Sprite):
 
 class GameMain():
     done = False
-    color_bg = Color((76, 76, 76))
+    color_background = Color((76, 76, 76))
 
     def __init__(self, width=550, height=550, high_score=0):
         pygame.init()
@@ -255,20 +255,19 @@ class GameMain():
 
     def draw_board(self):
         self.cells = pygame.sprite.Group()
-
-        cur_x, cur_y = 100, 100
+        x, y = 100, 100
         for row in self.board.board:
             for square in row:
-                new_cell = Cell((cur_x, cur_y), value=square)
+                new_cell = Cell((x, y), value=square)
                 self.cells.add(new_cell)
-                cur_x += 110
-            cur_y += 110
-            cur_x = 100
+                x += 110
+            y += 110
+            x = 100
         self.cells.draw(self.screen)
 
     def main_loop(self):
         while not self.done:
-            self.handle_events()
+            self.key_events()
 
             if self.score > self.high_score:
                 self.high_score = self.score
@@ -285,24 +284,27 @@ class GameMain():
         sys.exit()
 
     def draw(self):
-        self.screen.fill(self.color_bg)
+        self.screen.fill(self.color_background)
         if self.game_over:
-            self.game_over_label1 = self.font.render("Game Over", 1, (255, 255, 255))
-            self.game_over_label2 = self.font.render("Final Score: %d" % (self.score), 1, (255, 255, 255))
-            self.game_over_label3 = self.font.render("Press Space Bar to Play Again", 1, (255, 255, 255))
-            self.end_screen.blit(self.game_over_label1, (175, 50))
-            self.end_screen.blit(self.game_over_label2, (150, 100))
-            self.end_screen.blit(self.game_over_label3, (75, 470))
+            self.font = pygame.font.Font('freesansbold.ttf', 40)
+            self.game_over_text1 = self.font.render("Game Over", True, (255, 255, 255))
+            self.font = pygame.font.Font('freesansbold.ttf', 28)
+            self.game_over_text2 = self.font.render("Счёт: %d" % (self.score), True, (255, 255, 255))
+            self.font = pygame.font.Font('freesansbold.ttf', 20)
+            self.game_over_text3 = self.font.render("Нажмите пробел чтобы сыграть ещё раз", True, (255, 255, 255))
+            self.end_screen.blit(self.game_over_text1, (140, 175))
+            self.end_screen.blit(self.game_over_text2, (175, 225))
+            self.end_screen.blit(self.game_over_text3, (45, 470))
             self.screen.blit(self.end_screen, (25, 25))
         else:
             self.draw_board()
-            self.score_label = self.font.render("Score: %d" % (self.score), 1, (255, 255, 255))
-            self.screen.blit(self.score_label, (50, 10))
-            self.hiscore_label = self.font.render("High Score: %d" % (self.high_score), 1, (255, 255, 255))
-            self.screen.blit(self.hiscore_label, (320, 10))
+            self.score_text = self.font.render("Счёт: %d" % (self.score), 1, (255, 255, 255))
+            self.screen.blit(self.score_text, (30, 10))
+            self.high_score_text = self.font.render("Лучший счёт: %d" % (self.high_score), 1, (255, 255, 255))
+            self.screen.blit(self.high_score_text, (300, 10))
         pygame.display.update()
 
-    def handle_events(self):
+    def key_events(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
